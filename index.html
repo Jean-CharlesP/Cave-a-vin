@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ma Cave à Vin</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: #722F37;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+    
+    h1 {
+      margin: 0;
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #722F37;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    .btn-primary {
+      background-color: #722F37;
+      color: white;
+    }
+    
+    .btn-secondary {
+      background-color: #5D8AA8;
+      color: white;
+    }
+    
+    .btn-export {
+      background-color: #4CAF50;
+      color: white;
+    }
+    
+    .filters {
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .filter-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+    
+    select, input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .wine-list {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+      position: sticky;
+      top: 0;
+    }
+    
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      width: 60%;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .close {
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .form-row > div {
+      flex: 1;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+    
+    .wine-color {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
+    .red {
+      background-color: #8B0000;
+    }
+    
+    .white {
+      background-color: #F0E68C;
+    }
+    
+    .rose {
+      background-color: #FFB6C1;
+    }
+    
+    .sparkling {
+      background: linear-gradient(45deg, #F0E68C 50%, #f5f5f5 50%);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Ma Cave à Vin</h1>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-value">87</div>
+        <div>Total Bouteilles</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">62</div>
+        <div>Rouges</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">18</div>
+        <div>Blancs</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">7</div>
+        <div>Rosés</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">3850€</div>
+        <div>Valeur Estimée</div>
+      </div>
+    </div>
+    
+    <div class="actions">
+      <button class="btn btn-primary" onclick="openAddModal()">+ Ajouter des bouteilles</button>
+      <button class="btn btn-secondary" onclick="openRemoveModal()">- Retirer des bouteilles</button>
+      <button class="btn btn-export" onclick="exportData()">Exporter (CSV)</button>
+    </div>
+    
+    <div class="filters">
+      <div class="filter-row">
+        <select id="filterColor">
+          <option value="">Toutes les couleurs</option>
+          <option value="red">Rouge</option>
+          <option value="white">Blanc</option>
+          <option value="rose">Rosé</option>
+          <option value="sparkling">Champagne/Pétillant</option>
+        </select>
+        <select id="filterRegion">
+          <option value="">Toutes les régions</option>
+          <option value="bordeaux">Bordeaux</option>
+          <option value="bourgogne">Bourgogne</option>
+          <option value="rhone">Vallée du Rhône</option>
+          <option value="loire">Val de Loire</option>
+          <option value="alsace">Alsace</option>
+          <option value="champagne">Champagne</option>
+          <option value="languedoc">Languedoc-Roussillon</option>
+          <option value="autres">Autres</option>
+        </select>
+        <input type="text" id="searchBox" placeholder="Rechercher...">
+      </div>
+    </div>
+    
+    <div class="wine-list">
+      <table>
+        <thead>
+          <tr>
+            <th>Vin</th>
+            <th>Couleur</th>
+            <th>Région</th>
+            <th>Millésime</th>
+            <th>Note Vivino</th>
+            <th>Quantité</th>
+            <th>Valeur/bouteille</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Château Margaux</td>
+            <td><span class="wine-color red"></span> Rouge</td>
+            <td>Bordeaux</td>
+            <td>2015</td>
+            <td>4.5/5</td>
+            <td>2</td>
+            <td>450€</td>
+            <td>
+              <button class="btn" onclick="modifyWine('Château Margaux')">Modifier</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Chablis Premier Cru</td>
+            <td><span class="wine-color white"></span> Blanc</td>
+            <td>Bourgogne</td>
+            <td>2019</td>
+            <td>4.2/5</td>
+            <td>3</td>
+            <td>38€</td>
+            <td>
+              <button class="btn" onclick="modifyWine('Chablis Premier Cru')">Modifier</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Côtes de Provence</td>
+            <td><span class="wine-color rose"></span> Rosé</td>
+            <td>Provence</td>
+            <td>2022</td>
+            <td>3.8/5</td>
+            <td>4</td>
+            <td>15€</td>
+            <td>
+              <button class="btn" onclick="modifyWine('Côtes de Provence')">Modifier</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Dom Pérignon</td>
+            <td><span class="wine-color sparkling"></span> Champagne</td>
+            <td>Champagne</td>
+            <td>2010</td>
+            <td>4.7/5</td>
+            <td>1</td>
+            <td>180€</td>
+            <td>
+              <button class="btn" onclick="modifyWine('Dom Pérignon')">Modifier</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Châteauneuf-du-Pape</td>
+            <td><span class="wine-color red"></span> Rouge</td>
+            <td>Vallée du Rhône</td>
+            <td>2018</td>
+            <td>4.3/5</td>
+            <td>2</td>
+            <td>45€</td>
+            <td>
+              <button class="btn" onclick="modifyWine('Châteauneuf-du-Pape')">Modifier</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Modal d'ajout de bouteilles -->
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('addModal')">&times;</span>
+      <h2>Ajouter des bouteilles</h2>
+      <form id="addForm">
+        <div class="form-group">
+          <label for="wineName">Nom du vin</label>
+          <input type="text" id="wineName" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="wineColor">Couleur</label>
+            <select id="wineColor" required>
+              <option value="red">Rouge</option>
+              <option value="white">Blanc</option>
+              <option value="rose">Rosé</option>
+              <option value="sparkling">Champagne/Pétillant</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="wineRegion">Région</label>
+            <select id="wineRegion" required>
+              <option value="bordeaux">Bordeaux</option>
+              <option value="bourgogne">Bourgogne</option>
+              <option value="rhone">Vallée du Rhône</option>
+              <option value="loire">Val de Loire</option>
+              <option value="alsace">Alsace</option>
+              <option value="champagne">Champagne</option>
+              <option value="languedoc">Languedoc-Roussillon</option>
+              <option value="provence">Provence</option>
+              <option value="autres">Autres</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="wineYear">Millésime</label>
+            <input type="number" id="wineYear" min="1900" max="2025" required>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="wineRating">Note Vivino (0-5)</label>
+            <input type="number" id="wineRating" min="0" max="5" step="0.1">
+          </div>
+          
+          <div class="form-group">
+            <label for="wineQuantity">Quantité</label>
+            <input type="number" id="wineQuantity" min="1" value="1" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="wineValue">Valeur par bouteille (€)</label>
+            <input type="number" id="wineValue" min="0" step="0.01">
+          </div>
+        </div>
+        
+        <div class="form-group text-center">
+          <button type="submit" class="btn btn-primary">Ajouter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Modal de retrait de bouteilles -->
+  <div id="removeModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('removeModal')">&times;</span>
+      <h2>Retirer des bouteilles</h2>
+      <form id="removeForm">
+        <div class="form-group">
+          <label for="removeWineName">Sélectionner un vin</label>
+          <select id="removeWineName" required>
+            <option value="">-- Choisir un vin --</option>
+            <option value="Château Margaux">Château Margaux (2015) - 2 en stock</option>
+            <option value="Chablis Premier Cru">Chablis Premier Cru (2019) - 3 en stock</option>
+            <option value="Côtes de Provence">Côtes de Provence (2022) - 4 en stock</option>
+            <option value="Dom Pérignon">Dom Pérignon (2010) - 1 en stock</option>
+            <option value="Châteauneuf-du-Pape">Châteauneuf-du-Pape (2018) - 2 en stock</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="removeQuantity">Quantité à retirer</label>
+          <input type="number" id="removeQuantity" min="1" value="1" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="removeReason">Raison (optionnel)</label>
+          <select id="removeReason">
+            <option value="consumption">Consommée</option>
+            <option value="gift">Offerte</option>
+            <option value="damaged">Endommagée</option>
+            <option value="sold">Vendue</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+        
+        <div class="form-group text-center">
+          <button type="submit" class="btn btn-secondary">Retirer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    // Fonctions pour gérer les modales
+    function openAddModal() {
+      document.getElementById('addModal').style.display = 'block';
+    }
+    
+    function openRemoveModal() {
+      document.getElementById('removeModal').style.display = 'block';
+    }
+    
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+    
+    function modifyWine(wineName) {
+      alert("Modification de " + wineName + " (fonctionnalité à implémenter)");
+    }
+    
+    function exportData() {
+      alert("Export des données en CSV (fonctionnalité à implémenter)");
+    }
+    
+    // Gestion des formulaires
+    document.getElementById('addForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Simulation d'ajout (dans une application réelle, cela serait enregistré dans une base de données)
+      const wineName = document.getElementById('wineName').value;
+      const quantity = document.getElementById('wineQuantity').value;
+      
+      alert(`${quantity} bouteille(s) de ${wineName} ajoutée(s) avec succès!`);
+      closeModal('addModal');
+      
+      // Réinitialiser le formulaire
+      this.reset();
+    });
+    
+    document.getElementById('removeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Simulation de retrait
+      const wineName = document.getElementById('removeWineName').value;
+      const quantity = document.getElementById('removeQuantity').value;
+      
+      alert(`${quantity} bouteille(s) de ${wineName} retirée(s) avec succès!`);
+      closeModal('removeModal');
+      
+      // Réinitialiser le formulaire
+      this.reset();
+    });
+    
+    // Fermer les modales si on clique en dehors
+    window.onclick = function(event) {
+      if (event.target.className === 'modal') {
+        event.target.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
+Ajout du code initial de l'application cave à vin

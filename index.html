@@ -222,23 +222,23 @@
   <div class="container">
     <div class="stats">
       <div class="stat-item">
-        <div class="stat-value">87</div>
+        <div class="stat-value">0</div>
         <div>Total Bouteilles</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">62</div>
+        <div class="stat-value">0</div>
         <div>Rouges</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">18</div>
+        <div class="stat-value">0</div>
         <div>Blancs</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">7</div>
+        <div class="stat-value">0</div>
         <div>Rosés</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">3850€</div>
+        <div class="stat-value">0€</div>
         <div>Valeur Estimée</div>
       </div>
     </div>
@@ -267,6 +267,7 @@
           <option value="alsace">Alsace</option>
           <option value="champagne">Champagne</option>
           <option value="languedoc">Languedoc-Roussillon</option>
+          <option value="provence">Provence</option>
           <option value="autres">Autres</option>
         </select>
         <input type="text" id="searchBox" placeholder="Rechercher...">
@@ -288,66 +289,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Château Margaux</td>
-            <td><span class="wine-color red"></span> Rouge</td>
-            <td>Bordeaux</td>
-            <td>2015</td>
-            <td>4.5/5</td>
-            <td>2</td>
-            <td>450€</td>
-            <td>
-              <button class="btn" onclick="modifyWine('Château Margaux')">Modifier</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Chablis Premier Cru</td>
-            <td><span class="wine-color white"></span> Blanc</td>
-            <td>Bourgogne</td>
-            <td>2019</td>
-            <td>4.2/5</td>
-            <td>3</td>
-            <td>38€</td>
-            <td>
-              <button class="btn" onclick="modifyWine('Chablis Premier Cru')">Modifier</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Côtes de Provence</td>
-            <td><span class="wine-color rose"></span> Rosé</td>
-            <td>Provence</td>
-            <td>2022</td>
-            <td>3.8/5</td>
-            <td>4</td>
-            <td>15€</td>
-            <td>
-              <button class="btn" onclick="modifyWine('Côtes de Provence')">Modifier</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Dom Pérignon</td>
-            <td><span class="wine-color sparkling"></span> Champagne</td>
-            <td>Champagne</td>
-            <td>2010</td>
-            <td>4.7/5</td>
-            <td>1</td>
-            <td>180€</td>
-            <td>
-              <button class="btn" onclick="modifyWine('Dom Pérignon')">Modifier</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Châteauneuf-du-Pape</td>
-            <td><span class="wine-color red"></span> Rouge</td>
-            <td>Vallée du Rhône</td>
-            <td>2018</td>
-            <td>4.3/5</td>
-            <td>2</td>
-            <td>45€</td>
-            <td>
-              <button class="btn" onclick="modifyWine('Châteauneuf-du-Pape')">Modifier</button>
-            </td>
-          </tr>
+          <!-- Le contenu du tableau sera généré dynamiquement par JavaScript -->
         </tbody>
       </table>
     </div>
@@ -430,11 +372,7 @@
           <label for="removeWineName">Sélectionner un vin</label>
           <select id="removeWineName" required>
             <option value="">-- Choisir un vin --</option>
-            <option value="Château Margaux">Château Margaux (2015) - 2 en stock</option>
-            <option value="Chablis Premier Cru">Chablis Premier Cru (2019) - 3 en stock</option>
-            <option value="Côtes de Provence">Côtes de Provence (2022) - 4 en stock</option>
-            <option value="Dom Pérignon">Dom Pérignon (2010) - 1 en stock</option>
-            <option value="Châteauneuf-du-Pape">Châteauneuf-du-Pape (2018) - 2 en stock</option>
+            <!-- Options générées dynamiquement par JavaScript -->
           </select>
         </div>
         
@@ -462,63 +400,256 @@
   </div>
   
   <script>
+    // Structure de données pour stocker les vins
+    let wineCollection = [];
+
+    // Chargement des données depuis localStorage au démarrage
+    function loadData() {
+      const savedWines = localStorage.getItem('wineCollection');
+      if (savedWines) {
+        wineCollection = JSON.parse(savedWines);
+        updateWineTable();
+        updateStats();
+      }
+    }
+
+    // Sauvegarde des données dans localStorage
+    function saveData() {
+      localStorage.setItem('wineCollection', JSON.stringify(wineCollection));
+    }
+
+    // Mise à jour de la table des vins
+    function updateWineTable() {
+      const tableBody = document.querySelector('.wine-list tbody');
+      tableBody.innerHTML = '';
+      
+      // Filtres
+      const colorFilter = document.getElementById('filterColor').value;
+      const regionFilter = document.getElementById('filterRegion').value;
+      const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+      
+      wineCollection.forEach((wine, index) => {
+        // Appliquer les filtres
+        if (
+          (colorFilter === '' || wine.color === colorFilter) &&
+          (regionFilter === '' || wine.region === regionFilter) &&
+          (searchTerm === '' || wine.name.toLowerCase().includes(searchTerm))
+        ) {
+          const row = document.createElement('tr');
+          
+          const colorClass = {
+            'red': 'red',
+            'white': 'white',
+            'rose': 'rose',
+            'sparkling': 'sparkling'
+          }[wine.color] || 'red';
+          
+          const colorDisplay = {
+            'red': 'Rouge',
+            'white': 'Blanc',
+            'rose': 'Rosé',
+            'sparkling': 'Champagne/Pétillant'
+          }[wine.color] || 'Rouge';
+          
+          row.innerHTML = `
+            <td>${wine.name}</td>
+            <td><span class="wine-color ${colorClass}"></span> ${colorDisplay}</td>
+            <td>${wine.region}</td>
+            <td>${wine.year}</td>
+            <td>${wine.rating}/5</td>
+            <td>${wine.quantity}</td>
+            <td>${wine.value}€</td>
+            <td>
+              <button class="btn" onclick="modifyWine(${index})">Modifier</button>
+            </td>
+          `;
+          
+          tableBody.appendChild(row);
+        }
+      });
+      
+      // Mise à jour de la liste déroulante pour le retrait
+      updateRemoveDropdown();
+    }
+
+    // Mise à jour des statistiques
+    function updateStats() {
+      let totalBottles = 0;
+      let redBottles = 0;
+      let whiteBottles = 0;
+      let roseBottles = 0;
+      let sparklingBottles = 0;
+      let totalValue = 0;
+      
+      wineCollection.forEach(wine => {
+        totalBottles += wine.quantity;
+        
+        if (wine.color === 'red') redBottles += wine.quantity;
+        if (wine.color === 'white') whiteBottles += wine.quantity;
+        if (wine.color === 'rose') roseBottles += wine.quantity;
+        if (wine.color === 'sparkling') sparklingBottles += wine.quantity;
+        
+        totalValue += wine.quantity * wine.value;
+      });
+      
+      document.querySelector('.stats .stat-item:nth-child(1) .stat-value').textContent = totalBottles;
+      document.querySelector('.stats .stat-item:nth-child(2) .stat-value').textContent = redBottles;
+      document.querySelector('.stats .stat-item:nth-child(3) .stat-value').textContent = whiteBottles;
+      document.querySelector('.stats .stat-item:nth-child(4) .stat-value').textContent = roseBottles;
+      document.querySelector('.stats .stat-item:nth-child(5) .stat-value').textContent = totalValue.toFixed(0) + '€';
+    }
+
+    // Mise à jour de la liste déroulante pour le retrait
+    function updateRemoveDropdown() {
+      const select = document.getElementById('removeWineName');
+      select.innerHTML = '<option value="">-- Choisir un vin --</option>';
+      
+      wineCollection.forEach((wine, index) => {
+        if (wine.quantity > 0) {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = `${wine.name} (${wine.year}) - ${wine.quantity} en stock`;
+          select.appendChild(option);
+        }
+      });
+    }
+
     // Fonctions pour gérer les modales
     function openAddModal() {
       document.getElementById('addModal').style.display = 'block';
     }
-    
+
     function openRemoveModal() {
       document.getElementById('removeModal').style.display = 'block';
+      updateRemoveDropdown();
     }
-    
+
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = 'none';
     }
-    
-    function modifyWine(wineName) {
-      alert("Modification de " + wineName + " (fonctionnalité à implémenter)");
+
+    function modifyWine(index) {
+      // À implémenter : ouverture d'un modal de modification avec les données du vin
+      alert("Modification du vin " + wineCollection[index].name + " (fonctionnalité à implémenter)");
     }
-    
+
     function exportData() {
-      alert("Export des données en CSV (fonctionnalité à implémenter)");
+      // Création des données CSV
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Nom,Couleur,Région,Millésime,Note Vivino,Quantité,Valeur\n";
+      
+      wineCollection.forEach(wine => {
+        const colorDisplay = {
+          'red': 'Rouge',
+          'white': 'Blanc',
+          'rose': 'Rosé',
+          'sparkling': 'Champagne/Pétillant'
+        }[wine.color] || 'Rouge';
+        
+        csvContent += `"${wine.name}","${colorDisplay}","${wine.region}",${wine.year},${wine.rating},${wine.quantity},${wine.value}\n`;
+      });
+      
+      // Création du lien de téléchargement
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "ma-cave-a-vin.csv");
+      document.body.appendChild(link);
+      
+      // Téléchargement du fichier
+      link.click();
     }
-    
+
     // Gestion des formulaires
     document.getElementById('addForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // Simulation d'ajout (dans une application réelle, cela serait enregistré dans une base de données)
-      const wineName = document.getElementById('wineName').value;
-      const quantity = document.getElementById('wineQuantity').value;
+      const newWine = {
+        name: document.getElementById('wineName').value,
+        color: document.getElementById('wineColor').value,
+        region: document.getElementById('wineRegion').value,
+        year: parseInt(document.getElementById('wineYear').value),
+        rating: parseFloat(document.getElementById('wineRating').value) || 0,
+        quantity: parseInt(document.getElementById('wineQuantity').value),
+        value: parseFloat(document.getElementById('wineValue').value) || 0
+      };
       
-      alert(`${quantity} bouteille(s) de ${wineName} ajoutée(s) avec succès!`);
+      // Vérifier si le vin existe déjà
+      const existingWineIndex = wineCollection.findIndex(wine => 
+        wine.name === newWine.name && wine.year === newWine.year
+      );
+      
+      if (existingWineIndex !== -1) {
+        // Mettre à jour la quantité si le vin existe déjà
+        wineCollection[existingWineIndex].quantity += newWine.quantity;
+        alert(`${newWine.quantity} bouteille(s) de ${newWine.name} ajoutée(s) à l'inventaire existant.`);
+      } else {
+        // Ajouter un nouveau vin
+        wineCollection.push(newWine);
+        alert(`${newWine.quantity} bouteille(s) de ${newWine.name} ajoutée(s) avec succès!`);
+      }
+      
+      // Sauvegarder et mettre à jour l'interface
+      saveData();
+      updateWineTable();
+      updateStats();
       closeModal('addModal');
       
       // Réinitialiser le formulaire
       this.reset();
     });
-    
+
     document.getElementById('removeForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // Simulation de retrait
-      const wineName = document.getElementById('removeWineName').value;
-      const quantity = document.getElementById('removeQuantity').value;
+      const wineIndex = document.getElementById('removeWineName').value;
+      const quantityToRemove = parseInt(document.getElementById('removeQuantity').value);
       
-      alert(`${quantity} bouteille(s) de ${wineName} retirée(s) avec succès!`);
+      if (wineIndex === '') {
+        alert('Veuillez sélectionner un vin');
+        return;
+      }
+      
+      const wine = wineCollection[wineIndex];
+      
+      if (quantityToRemove > wine.quantity) {
+        alert(`Vous ne pouvez pas retirer plus de bouteilles que vous n'en avez (${wine.quantity} disponibles).`);
+        return;
+      }
+      
+      wine.quantity -= quantityToRemove;
+      
+      if (wine.quantity === 0) {
+        // Option: supprimer le vin de la collection s'il n'y a plus de bouteilles
+        // wineCollection.splice(wineIndex, 1);
+      }
+      
+      alert(`${quantityToRemove} bouteille(s) de ${wine.name} retirée(s) avec succès!`);
+      
+      // Sauvegarder et mettre à jour l'interface
+      saveData();
+      updateWineTable();
+      updateStats();
       closeModal('removeModal');
       
       // Réinitialiser le formulaire
       this.reset();
     });
-    
+
+    // Gérer les filtres
+    document.getElementById('filterColor').addEventListener('change', updateWineTable);
+    document.getElementById('filterRegion').addEventListener('change', updateWineTable);
+    document.getElementById('searchBox').addEventListener('input', updateWineTable);
+
     // Fermer les modales si on clique en dehors
     window.onclick = function(event) {
       if (event.target.className === 'modal') {
         event.target.style.display = 'none';
       }
     }
+
+    // Charger les données au démarrage
+    window.addEventListener('DOMContentLoaded', loadData);
   </script>
 </body>
 </html>
-Ajout du code initial de l'application cave à vin
